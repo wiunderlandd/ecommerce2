@@ -1,22 +1,25 @@
 <script lang="ts" setup>
-import { products } from "../../composables/constants/product"
-import { ref } from "vue";
-import { computed } from "vue";
+import { useProductsStore } from "~/stores/products";
+
+const productStore = useProductsStore();
+const allProducts = ref([]);
+
+productStore.getAllProducts().then(() => {
+allProducts.value = productStore.products;
+});
 
 const selectedCategory = ref("");
-const allProducts = computed(() => {
-if (selectedCategory.value) {
-return products.filter((item) => item.category === selectedCategory.value);
-}
-return products;
-});
 </script>
 <template>
     <section>
         <div class="container">
             <div class="py-10">
-                <div class="mb-6 flex justify-end gap-6">
-                    <Dropdown @selected-category="selectedCategory = $event" />
+                <div class="mb-6 flex justify-end gap-20">
+                   <NuxtLink to="/category/create" class="bg-orange-500 text-white flex justify-center items-center px-3 rounded-lg">
+                   <NuxtLink to="/product/create" class="bg-green-500 text-white flex justify-center items-center px-3 rounded-lg">Create Products</NuxtLink>
+                   Create Category
+                   </NuxtLink>                    
+                   <Dropdown @selected-category="selectedCategory = $event" />
                     </div>
                         <div class="flex gap-6 flex-wrap mx-auto">
                             <template v-for="(item, index) in allProducts" :key="index">
